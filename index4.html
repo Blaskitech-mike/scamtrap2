@@ -1,0 +1,1968 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SCAMTRACE GLOBAL | International Digital Fraud & Forensic Investigation Platform</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        navy: {
+                            900: '#071426',
+                            800: '#0c1e36',
+                            700: '#10243D',
+                            600: '#1a3456',
+                            500: '#264873',
+                        },
+                        emerald: {
+                            500: '#00B887',
+                            600: '#009d73',
+                            400: '#10e3ab',
+                        },
+                        warning: '#EF4444'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Outfit', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #071426;
+            color: #F1F5F9;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, .font-display {
+            font-family: 'Outfit', sans-serif;
+        }
+
+        /* Glassmorphism custom classes */
+        .glass-card {
+            background: rgba(16, 36, 61, 0.65);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .glass-nav {
+            background: rgba(7, 20, 38, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .cyber-grid {
+            background-size: 40px 40px;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        }
+
+        .gradient-glow {
+            box-shadow: 0 0 40px -10px rgba(0, 184, 135, 0.3);
+        }
+
+        /* Custom scrollbars */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #071426;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #10243D;
+            border-radius: 4px;
+            border: 1px solid rgba(0, 184, 135, 0.2);
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00B887;
+        }
+
+        /* Custom Toast Notification */
+        #toast-container {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            z-index: 9999;
+        }
+    </style>
+</head>
+<body class="cyber-grid antialiased selection:bg-emerald-500 selection:text-white">
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- PRELOADER -->
+    <div id="preloader" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-navy-900 transition-opacity duration-500">
+        <div class="relative flex items-center justify-center mb-4">
+            <div class="w-20 h-20 border-4 border-emerald-500/20 border-t-emerald-500 rounded-full animate-spin"></div>
+            <i class="fa-solid fa-shield-halved text-2xl text-emerald-500 absolute"></i>
+        </div>
+        <div class="text-xl font-bold font-display tracking-wider text-white">SCAMTRACE <span class="text-emerald-500">GLOBAL</span></div>
+        <div class="text-xs text-slate-400 mt-2 flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            Initializing Encrypted Forensics Engine...
+        </div>
+    </div>
+
+    <!-- GLOBAL TOP ANNOUNCEMENT & DISCLOSURE BAR -->
+    <div class="bg-navy-800 border-b border-white/5 py-2 px-4 text-xs text-slate-300">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-2">
+            <div class="flex items-center gap-2">
+                <span class="bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded text-[10px] font-semibold border border-emerald-500/20 uppercase">Independent Notice</span>
+                <span>SCAMTRACE GLOBAL provides forensic analysis & evidence docketing. We strictly comply with global law enforcement standards.</span>
+            </div>
+            
+            <!-- LOCALISATION ENGINE BAR -->
+            <div class="flex items-center gap-4">
+                <div class="flex items-center gap-1.5 text-slate-300">
+                    <i class="fa-solid fa-earth-americas text-emerald-500"></i>
+                    <label for="country-selector" class="sr-only">Select Country & Currency</label>
+                    <select id="country-selector" onchange="switchCountry(this.value)" class="bg-navy-900 border border-white/10 rounded px-2 py-1 text-xs text-white focus:outline-none focus:border-emerald-500 cursor-pointer">
+                        <!-- Populated dynamically via JS -->
+                    </select>
+                </div>
+                <div id="rate-display" class="hidden sm:inline-block text-[11px] text-slate-400 bg-white/5 px-2 py-0.5 rounded">
+                    1 USD = <span id="current-rate-val" class="text-white font-mono">1.00</span> <span id="current-curr-code">USD</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NAVIGATION HEADER -->
+    <header class="sticky top-0 z-40 glass-nav transition-all">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <a href="#" onclick="navigateTo('home'); return false;" class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-navy-700 flex items-center justify-center border border-emerald-500/30 shadow-lg shadow-emerald-500/10">
+                    <i class="fa-solid fa-fingerprint text-xl text-white"></i>
+                </div>
+                <div>
+                    <span class="font-display font-extrabold text-xl tracking-tight text-white block leading-none">SCAMTRACE</span>
+                    <span class="text-[10px] tracking-widest uppercase text-emerald-400 font-semibold">GLOBAL FORENSICS</span>
+                </div>
+            </a>
+
+            <!-- Desktop Navigation Links (Simplified) -->
+            <nav class="hidden lg:flex items-center gap-8 text-sm font-medium">
+                <a href="#" onclick="navigateTo('packages'); return false;" class="nav-link text-slate-300 hover:text-emerald-400 transition flex items-center gap-2" data-view="packages">
+                    <i class="fa-solid fa-layer-group text-xs text-emerald-400"></i>
+                    <span>Investigation Plans</span>
+                </a>
+                <a href="#" onclick="navigateTo('report'); return false;" class="nav-link text-slate-300 hover:text-emerald-400 transition flex items-center gap-2" data-view="report">
+                    <i class="fa-solid fa-file-shield text-xs text-emerald-400"></i>
+                    <span>Select Plan & Report</span>
+                </a>
+                <a href="#" onclick="navigateTo('track'); return false;" class="nav-link text-slate-300 hover:text-emerald-400 transition flex items-center gap-2" data-view="track">
+                    <i class="fa-solid fa-magnifying-glass-location text-xs text-emerald-400"></i>
+                    <span>Track My Case</span>
+                </a>
+            </nav>
+
+            <!-- CTA & User Quick Action -->
+            <div class="hidden sm:flex items-center gap-3">
+                <button onclick="navigateTo('report')" class="bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white text-xs font-bold px-4 py-2.5 rounded-lg shadow-lg shadow-emerald-500/20 border border-emerald-400/30 flex items-center gap-2 transition hover:scale-105">
+                    <i class="fa-solid fa-shield-halved animate-bounce"></i>
+                    <span>SELECT PLAN & REPORT</span>
+                </button>
+                <div id="auth-buttons-container">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+
+            <!-- Mobile Hamburger Button -->
+            <button onclick="toggleMobileMenu()" class="lg:hidden text-slate-300 hover:text-white p-2">
+                <i class="fa-solid fa-bars text-xl" id="menu-icon"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Menu Drawer (Simplified) -->
+        <div id="mobile-menu" class="hidden lg:hidden bg-navy-900/95 border-b border-white/10 px-4 pt-2 pb-6 space-y-3">
+            <a href="#" onclick="navigateTo('packages'); toggleMobileMenu(); return false;" class="block py-2 text-slate-300 hover:text-emerald-400 font-medium">Investigation Plans</a>
+            <a href="#" onclick="navigateTo('report'); toggleMobileMenu(); return false;" class="block py-2 text-slate-300 hover:text-emerald-400 font-medium">Select Plan & Report</a>
+            <a href="#" onclick="navigateTo('track'); toggleMobileMenu(); return false;" class="block py-2 text-slate-300 hover:text-emerald-400 font-medium">Track My Case</a>
+            
+            <div class="pt-4 border-t border-white/10 flex flex-col gap-2">
+                <button onclick="navigateTo('report'); toggleMobileMenu();" class="w-full bg-emerald-500 text-white font-bold py-2.5 rounded-lg text-center">
+                    <i class="fa-solid fa-triangle-exclamation mr-2"></i> Report a Scam Now
+                </button>
+                <div id="mobile-auth-container"></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- DYNAMIC ROUTED VIEW CONTAINER -->
+    <main id="app-viewport" class="min-h-[calc(100vh-280px)]">
+        <!-- Views rendered here via JS -->
+    </main>
+
+    <!-- GLOBAL FOOTER -->
+    <footer class="bg-navy-900 border-t border-white/10 pt-16 pb-8 text-slate-400 text-sm mt-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 mb-12">
+            <!-- Col 1: Brand & Bio -->
+            <div class="lg:col-span-2">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-9 h-9 rounded-lg bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400">
+                        <i class="fa-solid fa-shield-halved text-lg"></i>
+                    </div>
+                    <span class="font-display font-extrabold text-xl text-white tracking-tight">SCAMTRACE <span class="text-emerald-500">GLOBAL</span></span>
+                </div>
+                <p class="text-slate-400 leading-relaxed text-xs sm:text-sm mb-6 max-w-sm">
+                    An international digital forensics, cyber investigation, and fraud evidence management agency. Assisting individuals and entities in gathering admissible evidence for global law enforcement referral.
+                </p>
+                <div class="flex items-center gap-3">
+                    <a href="#" class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-emerald-500 hover:text-white transition"><i class="fa-brands fa-linkedin-in text-xs"></i></a>
+                    <a href="#" class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-emerald-500 hover:text-white transition"><i class="fa-brands fa-x-twitter text-xs"></i></a>
+                    <a href="#" class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-emerald-500 hover:text-white transition"><i class="fa-brands fa-github text-xs"></i></a>
+                    <a href="#" class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-emerald-500 hover:text-white transition"><i class="fa-brands fa-telegram text-xs"></i></a>
+                </div>
+            </div>
+
+            <!-- Col 2: Services -->
+            <div>
+                <h4 class="font-display font-semibold text-white text-base mb-4 border-l-2 border-emerald-500 pl-2">Forensic Services</h4>
+                <ul class="space-y-2 text-xs">
+                    <li><a href="#" onclick="navigateTo('services'); return false;" class="hover:text-emerald-400 transition">Crypto Asset Tracing</a></li>
+                    <li><a href="#" onclick="navigateTo('services'); return false;" class="hover:text-emerald-400 transition">Investment Scam Analysis</a></li>
+                    <li><a href="#" onclick="navigateTo('services'); return false;" class="hover:text-emerald-400 transition">Romance Fraud Forensics</a></li>
+                    <li><a href="#" onclick="navigateTo('services'); return false;" class="hover:text-emerald-400 transition">BEC Wire Intercepts</a></li>
+                    <li><a href="#" onclick="navigateTo('services'); return false;" class="hover:text-emerald-400 transition">Fake Exchange Takedowns</a></li>
+                </ul>
+            </div>
+
+            <!-- Col 3: Quick Links -->
+            <div>
+                <h4 class="font-display font-semibold text-white text-base mb-4 border-l-2 border-emerald-500 pl-2">Navigation</h4>
+                <ul class="space-y-2 text-xs">
+                    <li><a href="#" onclick="navigateTo('report'); return false;" class="hover:text-emerald-400 transition">Submit Scam Report</a></li>
+                    <li><a href="#" onclick="navigateTo('packages'); return false;" class="hover:text-emerald-400 transition">Investigation Pricing</a></li>
+                    <li><a href="#" onclick="navigateTo('track'); return false;" class="hover:text-emerald-400 transition">Track Active Case</a></li>
+                    <li><a href="#" onclick="navigateTo('how-it-works'); return false;" class="hover:text-emerald-400 transition">Chain of Custody</a></li>
+                    <li><a href="#" onclick="openAuthModal('login'); return false;" class="hover:text-emerald-400 transition">Portal Login</a></li>
+                </ul>
+            </div>
+
+            <!-- Col 4: Legal & Official Resources -->
+            <div>
+                <h4 class="font-display font-semibold text-white text-base mb-4 border-l-2 border-emerald-500 pl-2">Compliance & Global</h4>
+                <ul class="space-y-2 text-xs">
+                    <li><a href="#" onclick="navigateTo('legal-privacy'); return false;" class="hover:text-emerald-400 transition">Privacy Policy</a></li>
+                    <li><a href="#" onclick="navigateTo('legal-terms'); return false;" class="hover:text-emerald-400 transition">Terms of Service</a></li>
+                    <li><a href="https://www.ic3.gov" target="_blank" rel="noopener" class="text-slate-400 hover:text-emerald-400 transition flex items-center gap-1">FBI IC3 Portal <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i></a></li>
+                    <li><a href="https://www.interpol.int" target="_blank" rel="noopener" class="text-slate-400 hover:text-emerald-400 transition flex items-center gap-1">INTERPOL Financial Cybercrime <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i></a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-white/5 pt-6 flex flex-col sm:flex-row justify-between items-center text-xs text-slate-500 gap-4">
+            <div>
+                &copy; 2026 SCAMTRACE GLOBAL INC. All Rights Reserved. ISO/IEC 27001 Certified Forensic Lab.
+            </div>
+            <div class="flex gap-4">
+                <span class="hover:text-slate-300">ISO 27001 Compliance</span>
+                <span>•</span>
+                <span class="hover:text-slate-300">Chain of Custody Verification</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- MODAL DIALOG CONTAINER (Auth, Checkout, Evidence Inspector, Detail Modals) -->
+    <div id="global-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-navy-950/80 backdrop-blur-md">
+        <div id="modal-content" class="bg-navy-800 border border-white/10 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative">
+            <!-- Modal Body injected dynamically -->
+        </div>
+    </div>
+
+    <!-- MAIN JAVASCRIPT APPLICATION ARCHITECTURE -->
+    <script>
+        /**
+         * SCAMTRACE GLOBAL - APPLICATION STATE ENGINE
+         */
+        const AppState = {
+            currentView: 'home',
+            currentUser: null,
+            selectedCountry: 'US',
+            currency: 'USD',
+            currencySymbol: '$',
+            exchangeRate: 1.0,
+            
+            // Mock Localisation Database with 15+ countries
+            countries: {
+                'US': { name: 'United States', currency: 'USD', symbol: '$', rate: 1.0, lang: 'English', code: '+1', gateway: 'Stripe / Wire Transfer' },
+                'NG': { name: 'Nigeria', currency: 'NGN', symbol: '₦', rate: 1550.0, lang: 'English', code: '+234', gateway: 'Paystack / Flutterwave / Bank Transfer' },
+                'GB': { name: 'United Kingdom', currency: 'GBP', symbol: '£', rate: 0.79, lang: 'English', code: '+44', gateway: 'Stripe / Faster Payments' },
+                'EU': { name: 'Germany / EU', currency: 'EUR', symbol: '€', rate: 0.92, lang: 'German', code: '+49', gateway: 'SEPA Transfer / Stripe' },
+                'CA': { name: 'Canada', currency: 'CAD', symbol: 'CA$', rate: 1.36, lang: 'English/French', code: '+1', gateway: 'Interac / Stripe' },
+                'AU': { name: 'Australia', currency: 'AUD', symbol: 'A$', rate: 1.52, lang: 'English', code: '+61', gateway: 'Stripe / PayID' },
+                'GH': { name: 'Ghana', currency: 'GHS', symbol: 'GH₵', rate: 14.8, lang: 'English', code: '+233', gateway: 'Mobile Money / Bank Transfer' },
+                'ZA': { name: 'South Africa', currency: 'ZAR', symbol: 'R', rate: 18.4, lang: 'English', code: '+27', gateway: 'EFT / PayFast' },
+                'IN': { name: 'India', currency: 'INR', symbol: '₹', rate: 83.2, lang: 'English/Hindi', code: '+91', gateway: 'UPI / Razorpay' },
+                'KE': { name: 'Kenya', currency: 'KES', symbol: 'KSh', rate: 132.0, lang: 'English/Swahili', code: '+254', gateway: 'M-Pesa / Bank Wire' },
+                'AE': { name: 'United Arab Emirates', currency: 'AED', symbol: 'AED ', rate: 3.67, lang: 'Arabic/English', code: '+971', gateway: 'Central Bank Wire / Stripe' },
+                'BR': { name: 'Brazil', currency: 'BRL', symbol: 'R$', rate: 5.15, lang: 'Portuguese', code: '+55', gateway: 'PIX / Local Transfer' },
+                'JP': { name: 'Japan', currency: 'JPY', symbol: '¥', rate: 155.4, lang: 'Japanese', code: '+81', gateway: 'Stripe / Bank Wire' },
+                'CN': { name: 'China', currency: 'CNY', symbol: '¥', rate: 7.23, lang: 'Chinese', code: '+86', gateway: 'UnionPay / Wire' },
+                'CH': { name: 'Switzerland', currency: 'CHF', symbol: 'CHF ', rate: 0.90, lang: 'German/French', code: '+41', gateway: 'Swiss Wire / Stripe' }
+            },
+
+            // Packages Base Prices (in USD)
+            packages: {
+                'basic': { id: 'basic', name: 'Basic Evidence Package', usdPrice: 299, timeline: '3-5 Business Days', scope: 'Initial evidence verification, blockchain TX hash trace, scammer digital footprint check & preliminary PDF dossier.' },
+                'standard': { id: 'standard', name: 'Standard Forensic Trace', usdPrice: 699, timeline: '7-10 Business Days', scope: 'Full blockchain hop tracing, IP address geolocation analysis, domain registrar subpoena prep & law enforcement package.' },
+                'advanced': { id: 'advanced', name: 'Advanced Cross-Border Docket', usdPrice: 1499, timeline: '14-21 Business Days', scope: 'Complex multi-wallet obfuscation trace, exchange asset freeze inquiry filing, legal counsel bundle & dedicated analyst.' },
+                'corporate': { id: 'corporate', name: 'Corporate BEC & Cyber Fraud', usdPrice: 3499, timeline: 'Dedicated Team (24/7 Priority)', scope: 'Executive impersonation investigation, wire transfer recall protocol, international rogatory letter drafting & enterprise audit.' }
+            },
+
+            // Sample Cases Database
+            cases: [
+                {
+                    ref: 'STG-2026-8819',
+                    date: '2026-03-15',
+                    category: 'Cryptocurrency Scam',
+                    victim: 'Alexander Wright',
+                    email: 'alex.wright@example.com',
+                    country: 'US',
+                    scammer: 'CryptoMax Yield FX Ltd',
+                    amount: '$45,000 USD',
+                    status: 'Investigation in Progress',
+                    package: 'Standard Forensic Trace',
+                    paymentStatus: 'VERIFIED',
+                    paymentTxRef: 'STG-TX-9921048',
+                    investigator: 'Agent David Vance (Senior Cyber Analyst)',
+                    timeline: [
+                        { time: '2026-03-15 10:15', title: 'Plan Selected & Payment Verified', detail: 'Standard Forensic Trace ($699 USD) verified via Stripe TX #77189.' },
+                        { time: '2026-03-15 10:30', title: 'Scam Report Submitted', detail: 'Victim dossier & SHA-256 evidence logged into encrypted vault.' },
+                        { time: '2026-03-16 09:00', title: 'Case Assigned', detail: 'Assigned to Lead Investigator D. Vance.' }
+                    ],
+                    evidenceFiles: ['transaction_hash_receipt.png', 'telegram_chat_logs.pdf', 'wire_confirmation.pdf']
+                }
+            ],
+
+            // Active Multi-Step Report Form Draft (REQUIRES PAYMENT IN STEP 3)
+            reportDraft: {
+                step: 1,
+                fullName: '',
+                email: '',
+                phone: '',
+                country: 'US',
+                scamType: 'Cryptocurrency Fraud',
+                scammerName: '',
+                scammerContact: '',
+                amountLost: '',
+                selectedPlanId: 'standard',
+                paymentCompleted: false,
+                paymentTxRef: null,
+                dateIncident: '',
+                description: '',
+                files: []
+            }
+        };
+
+        // ... existing helper functions (formatCurrency, switchCountry, showToast, navigateTo, etc.) ...
+
+        // 4. INVESTIGATION PACKAGES & PRICING VIEW
+        function renderPackagesView() {
+            return `
+                <div class="max-w-7xl mx-auto px-4 py-16">
+                    <div class="text-center mb-12 space-y-3">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-semibold border border-emerald-500/30">
+                            Localized Pricing Engine (${AppState.currency})
+                        </div>
+                        <h1 class="font-display text-4xl font-extrabold text-white">Select Investigation Plan</h1>
+                        <p class="text-slate-400 text-sm max-w-2xl mx-auto">Choose a forensic investigation tier to initiate your scam report. Payment is required prior to report registration to allocate certified forensic team resources.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        ${Object.values(AppState.packages).map(pkg => `
+                            <div class="glass-card p-6 rounded-2xl border border-white/10 flex flex-col justify-between relative hover:border-emerald-500/50 transition">
+                                ${pkg.id === 'standard' ? '<span class="absolute -top-3 right-4 bg-emerald-500 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg">RECOMMENDED</span>' : ''}
+                                <div>
+                                    <h3 class="font-display font-bold text-lg text-white mb-1">${pkg.name}</h3>
+                                    <div class="text-xs text-slate-400 mb-4">${pkg.timeline}</div>
+
+                                    <div class="text-2xl font-extrabold text-emerald-400 font-mono mb-4">
+                                        ${formatCurrency(pkg.usdPrice)}
+                                    </div>
+
+                                    <p class="text-slate-300 text-xs leading-relaxed mb-6 border-t border-white/10 pt-4">
+                                        ${pkg.scope}
+                                    </p>
+                                </div>
+
+                                <button onclick="startReportWithPackage('${pkg.id}')" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 rounded-xl text-xs shadow-lg shadow-emerald-500/20 transition flex items-center justify-center gap-2">
+                                    <i class="fa-solid fa-lock text-xs"></i>
+                                    <span>Select & Begin Report</span>
+                                </button>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <div class="mt-12 text-center text-xs text-slate-400">
+                        * All packages include encrypted evidence store & standard PDF dossier for law enforcement submission.
+                    </div>
+                </div>
+            `;
+        }
+
+        // Helper function for copy to clipboard
+        function copyTextToClipboard(text, label) {
+            const tempInput = document.createElement('input');
+            tempInput.value = text;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            showToast(`${label} copied: ${text}`);
+        }
+
+        // --- GLOBAL HELPER & UTILITY FUNCTIONS ---
+        function formatCurrency(usdAmount) {
+            const cData = AppState.countries[AppState.selectedCountry] || AppState.countries['US'];
+            const converted = usdAmount * cData.rate;
+            return `${cData.symbol}${converted.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })} ${cData.currency}`;
+        }
+
+        function switchCountry(countryCode) {
+            if (!AppState.countries[countryCode]) return;
+            AppState.selectedCountry = countryCode;
+            const cData = AppState.countries[countryCode];
+            AppState.currency = cData.currency;
+            AppState.currencySymbol = cData.symbol;
+            AppState.exchangeRate = cData.rate;
+
+            document.getElementById('current-rate-val').innerText = cData.rate.toLocaleString();
+            document.getElementById('current-curr-code').innerText = cData.currency;
+
+            showToast(`Switched country to ${cData.name} (${cData.currency})`);
+            renderView(AppState.currentView);
+        }
+
+        function showToast(message) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'glass-card bg-navy-800/95 border border-emerald-500/50 text-white text-xs px-4 py-3 rounded-xl shadow-2xl flex items-center gap-2 pointer-events-auto transform transition-all duration-300 translate-y-2 opacity-0';
+            toast.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400"></i> <span>${message}</span>`;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        function navigateTo(view) {
+            AppState.currentView = view;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // Update nav active states
+            document.querySelectorAll('.nav-link').forEach(link => {
+                if (link.dataset.view === view) {
+                    link.classList.add('text-emerald-400');
+                    link.classList.remove('text-slate-300');
+                } else {
+                    link.classList.remove('text-emerald-400');
+                    link.classList.add('text-slate-300');
+                }
+            });
+
+            renderView(view);
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('global-modal');
+            modal.classList.add('hidden');
+        }
+
+        function openAuthModal(mode = 'login') {
+            const modal = document.getElementById('global-modal');
+            const content = document.getElementById('modal-content');
+
+            content.innerHTML = `
+                <div class="p-6 sm:p-8">
+                    <button onclick="closeModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+                    
+                    <div class="text-center mb-6">
+                        <i class="fa-solid fa-shield-halved text-3xl text-emerald-400 mb-2"></i>
+                        <h3 class="font-display text-2xl font-bold text-white">${mode === 'login' ? 'Client / Investigator Portal Login' : 'Register Secure Account'}</h3>
+                        <p class="text-xs text-slate-400 mt-1">${mode === 'login' ? 'Access active cases, forensic dockets & updates' : 'Create an encrypted client vault'}</p>
+                    </div>
+
+                    <form onsubmit="handleAuthSubmit(event, '${mode}')" class="space-y-4 text-xs">
+                        ${mode === 'register' ? `
+                            <div>
+                                <label class="block text-slate-300 mb-1">Full Name</label>
+                                <input type="text" id="auth-name" required placeholder="John Doe" class="w-full bg-navy-900 border border-white/10 rounded-lg p-2.5 text-white outline-none focus:border-emerald-500">
+                            </div>
+                        ` : ''}
+                        <div>
+                            <label class="block text-slate-300 mb-1">Email Address</label>
+                            <input type="email" id="auth-email" required placeholder="user@example.com" class="w-full bg-navy-900 border border-white/10 rounded-lg p-2.5 text-white outline-none focus:border-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-slate-300 mb-1">Password</label>
+                            <input type="password" id="auth-password" required placeholder="••••••••" class="w-full bg-navy-900 border border-white/10 rounded-lg p-2.5 text-white outline-none focus:border-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-slate-300 mb-1">Account Role</label>
+                            <select id="auth-role" class="w-full bg-navy-900 border border-white/10 rounded-lg p-2.5 text-white outline-none focus:border-emerald-500">
+                                <option value="client">Client / Victim Portal</option>
+                                <option value="investigator">Forensic Investigator</option>
+                                <option value="admin">System Administrator</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-bold py-3 rounded-xl shadow-lg shadow-emerald-500/20 text-xs transition hover:scale-[1.02]">
+                            ${mode === 'login' ? 'Authenticate Account' : 'Create Encrypted Vault'}
+                        </button>
+                    </form>
+                </div>
+            `;
+
+            modal.classList.remove('hidden');
+        }
+
+        function handleAuthSubmit(e, mode) {
+            e.preventDefault();
+            const email = document.getElementById('auth-email').value;
+            const role = document.getElementById('auth-role').value;
+
+            AppState.currentUser = { email, role };
+            closeModal();
+            updateAuthUI();
+
+            showToast(`Logged in as ${email} (${role.toUpperCase()})`);
+
+            if (role === 'investigator') navigateTo('investigator-dash');
+            else if (role === 'admin') navigateTo('admin-dash');
+            else navigateTo('customer-dash');
+        }
+
+        function logout() {
+            AppState.currentUser = null;
+            updateAuthUI();
+            showToast('Logged out of portal.');
+            navigateTo('home');
+        }
+
+        function updateAuthUI() {
+            const container = document.getElementById('auth-buttons-container');
+            const mobileContainer = document.getElementById('mobile-auth-container');
+
+            if (AppState.currentUser) {
+                const dashView = AppState.currentUser.role === 'investigator' ? 'investigator-dash' : (AppState.currentUser.role === 'admin' ? 'admin-dash' : 'customer-dash');
+                const html = `
+                    <div class="flex items-center gap-2">
+                        <button onclick="navigateTo('${dashView}')" class="bg-navy-800 hover:bg-navy-700 text-emerald-400 border border-emerald-500/30 text-xs font-bold px-3 py-2 rounded-lg flex items-center gap-1.5">
+                            <i class="fa-solid fa-user-shield"></i> Portal Vault
+                        </button>
+                        <button onclick="logout()" class="text-slate-400 hover:text-white p-2 text-xs" title="Sign Out">
+                            <i class="fa-solid fa-power-off"></i>
+                        </button>
+                    </div>
+                `;
+                if (container) container.innerHTML = html;
+                if (mobileContainer) mobileContainer.innerHTML = html;
+            } else {
+                const html = `
+                    <button onclick="openAuthModal('login')" class="bg-navy-800 hover:bg-navy-700 text-slate-200 border border-white/10 text-xs font-semibold px-3 py-2 rounded-lg transition">
+                        Portal Login
+                    </button>
+                `;
+                if (container) container.innerHTML = html;
+                if (mobileContainer) mobileContainer.innerHTML = html;
+            }
+        }
+
+        function startReportWithPackage(packageId) {
+            AppState.reportDraft.selectedPlanId = packageId;
+            AppState.reportDraft.step = 1;
+            navigateTo('report');
+        }
+
+        // 6. SCAM REPORTING MULTI-STEP WIZARD VIEW (UPDATED STEP 3 WITH VISIBLE ACCOUNT & COPY ACTION)
+        function renderReportFormView() {
+            const step = AppState.reportDraft.step;
+            const selectedPlan = AppState.packages[AppState.reportDraft.selectedPlanId || 'standard'];
+            const cData = AppState.countries[AppState.selectedCountry];
+            const sampleAccountNo = '9928-1029-4819';
+            const sampleTxRef = AppState.reportDraft.paymentTxRef || `STG-TX-${Math.floor(1000000 + Math.random() * 9000000)}`;
+
+            return `
+                <div class="max-w-4xl mx-auto px-4 py-12">
+                    <!-- Header -->
+                    <div class="text-center mb-8">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-semibold mb-2 border border-emerald-500/20">
+                            <i class="fa-solid fa-shield-cat"></i> Mandatory Verification Intake Flow
+                        </div>
+                        <h1 class="font-display text-3xl font-bold text-white">File an Official Scam Report</h1>
+                        <p class="text-xs text-slate-400 mt-1">Investigation Plan: <strong class="text-emerald-400">${selectedPlan.name} (${formatCurrency(selectedPlan.usdPrice)})</strong></p>
+                    </div>
+
+                    <!-- Step Progress Indicator -->
+                    <div class="grid grid-cols-5 gap-2 mb-8 text-center text-xs">
+                        <div class="py-2 rounded-lg border ${step === 1 ? 'bg-emerald-500 border-emerald-400 text-white font-bold' : (step > 1 ? 'bg-navy-800 border-emerald-500/50 text-emerald-400' : 'bg-navy-900 border-white/10 text-slate-500')}">
+                            1. Personal
+                        </div>
+                        <div class="py-2 rounded-lg border ${step === 2 ? 'bg-emerald-500 border-emerald-400 text-white font-bold' : (step > 2 ? 'bg-navy-800 border-emerald-500/50 text-emerald-400' : 'bg-navy-900 border-white/10 text-slate-500')}">
+                            2. Incident Info
+                        </div>
+                        <div class="py-2 rounded-lg border ${step === 3 ? 'bg-emerald-500 border-emerald-400 text-white font-bold' : (AppState.reportDraft.paymentCompleted ? 'bg-navy-800 border-emerald-500/50 text-emerald-400' : 'bg-navy-900 border-white/10 text-slate-500')}">
+                            3. Payment & Plan
+                        </div>
+                        <div class="py-2 rounded-lg border ${step === 4 ? 'bg-emerald-500 border-emerald-400 text-white font-bold' : (step > 4 ? 'bg-navy-800 border-emerald-500/50 text-emerald-400' : 'bg-navy-900 border-white/10 text-slate-500')}">
+                            4. Evidence Upload
+                        </div>
+                        <div class="py-2 rounded-lg border ${step === 5 ? 'bg-emerald-500 border-emerald-400 text-white font-bold' : 'bg-navy-900 border-white/10 text-slate-500'}">
+                            5. Consent & Submit
+                        </div>
+                    </div>
+
+                    <!-- Wizard Card -->
+                    <div class="glass-card p-6 sm:p-8 rounded-2xl border border-white/10">
+                        <form onsubmit="handleReportStepSubmit(event)">
+                            
+                            <!-- ... existing code for step 1 & step 2 ... -->
+                            ${step === 1 ? `
+                                <h3 class="font-display font-bold text-lg text-white mb-4 pb-2 border-b border-white/10">Step 1: Complainant Details</h3>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                                    <div>
+                                        <label class="block text-slate-300 mb-1">Full Legal Name *</label>
+                                        <input type="text" required value="${AppState.reportDraft.fullName}" onchange="AppState.reportDraft.fullName=this.value" class="w-full bg-navy-900 border border-white/10 rounded-lg p-2.5 text-white focus:border-emerald-500 outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block text-slate-300 mb-1">Email Address (For Forensic Updates) *</label>
+                                        <input type="email" required value="${AppState.reportDraft.email}" onchange="AppState.reportDraft.email=this.value" class="w-full bg-navy-900 border border-white/10 rounded-lg p-2.5 text-white focus:border-emerald-500 outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block text-slate-300 mb-1">Phone Number</label>
+                                        <input type="text" value="${AppState.reportDraft.phone}" onchange="AppState.reportDraft.phone=this.value" placeholder="${cData.code} 000 0000" class="w-full bg-navy-900 border border-white/10 rounded-lg p-2.5 text-white focus:border-emerald-500 outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block text-slate-300 mb-1">Country of Residence</label>
+                                        <select onchange="switchCountry(this.value); AppState.reportDraft.country=this.value;" class="w-full bg-navy-900 border border-white/10 rounded-lg p-2.5 text-white focus:border-emerald-500 outline-none">
+                                            ${Object.keys(AppState.countries).map(c => `<option value="${c}" ${c === AppState.selectedCountry ? 'selected' : ''}>${AppState.countries[c].name} (${AppState.countries[c].currency})</option>`).join('')}
+                                        </select>
+                                    </div>
+                                </div>
+                            ` : ''}
+
+                            ${step === 2 ? `
+                                <h3 class="font-display font-bold text-lg text-white mb-4 pb-2 border-b border-white/10">Step 2: Fraud & Scammer Details</h3>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                                    <div>
+                                        <label class="block text-slate-300 mb-1">Scam Type Category *</label>
+                                        <select onchange="AppState.reportDraft.scamType=this.value" class="w-full bg-navy-900 border border-white/10 rounded-lg p-2.5 text-white focus:border-emerald-500 outline-none">
+                                            <option ${AppState.reportDraft.scamType==='Cryptocurrency Fraud'?'selected':''}>Cryptocurrency Fraud</option>
+                                            <option ${AppState.reportDraft.scamType==='Investment & Forex Platform Scam'?'selected':''}>Investment & Forex Platform Scam</option>
+                                            <option ${AppState.reportDraft.scamType==='Romance & Social Media Fraud'?'selected':''}>Romance & Social Media Fraud</option>
+                                            <option ${AppState.reportDraft.scamType==='Business Email Compromise (BEC)'?'selected':''}>Business Email Compromise (BEC)</option>
+                                            <option ${AppState.reportDraft.scamType==='Online Shopping / Fake Store'?'selected':''}>Online Shopping / Fake Store</option>
+                                            <option ${AppState.reportDraft.scamType==='Phishing & Identity Theft'?'selected':''}>Phishing & Identity Theft</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-slate-300 mb-1">Scammer Name / Company Alias</label>
+                                        <input type="text" value="${AppState.reportDraft.scammerName}" onchange="AppState.reportDraft.scammerName=this.value" placeholder="e.g. Apex Trading Corp" class="w-full bg-navy-900 border border-white/10 rounded-lg p-2.5 text-white focus:border-emerald-500 outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block text-slate-300 mb-1">Scammer Contact Info</label>
+                                        <input type="text" value="${AppState.reportDraft.scammerContact}" onchange="AppState.reportDraft.scammerContact=this.value" placeholder="Telegram @handle, email, or phone" class="w-full bg-navy-900 border border-white/10 rounded-lg p-2.5 text-white focus:border-emerald-500 outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block text-slate-300 mb-1">Estimated Financial Loss *</label>
+                                        <input type="text" required value="${AppState.reportDraft.amountLost}" onchange="AppState.reportDraft.amountLost=this.value" placeholder="e.g. $15,000 USD or 2.5 BTC" class="w-full bg-navy-900 border border-white/10 rounded-lg p-2.5 text-white focus:border-emerald-500 outline-none">
+                                    </div>
+                                </div>
+                            ` : ''}
+
+                            ${step === 3 ? `
+                                <h3 class="font-display font-bold text-lg text-white mb-3 pb-2 border-b border-white/10">Step 3: Mandatory Plan Payment & Verification</h3>
+                                
+                                <div class="bg-navy-900 p-4 rounded-xl border border-white/10 flex justify-between items-center mb-6">
+                                    <div>
+                                        <div class="text-xs text-slate-400">Selected Plan:</div>
+                                        <div class="text-base font-bold text-white">${selectedPlan.name}</div>
+                                    </div>
+                                    <div class="text-xl font-extrabold text-emerald-400 font-mono">
+                                        ${formatCurrency(selectedPlan.usdPrice)}
+                                    </div>
+                                </div>
+
+                                ${AppState.reportDraft.paymentCompleted ? `
+                                    <div class="bg-emerald-500/10 border border-emerald-500/40 p-5 rounded-xl text-center space-y-2">
+                                        <i class="fa-solid fa-circle-check text-3xl text-emerald-400"></i>
+                                        <div class="text-white font-bold text-base">Payment Verified Successfully!</div>
+                                        <div class="text-xs font-mono text-emerald-300">Transaction Ref: ${AppState.reportDraft.paymentTxRef}</div>
+                                        <p class="text-xs text-slate-300 pt-2">Your payment has been logged. Click <strong>"Continue to Evidence Upload"</strong> below to proceed.</p>
+                                    </div>
+                                ` : `
+                                    <div class="space-y-5">
+                                        <!-- Callout Alert Header -->
+                                        <div class="bg-emerald-500/10 border-l-4 border-emerald-500 p-4 rounded-r-xl flex items-center gap-3">
+                                            <i class="fa-solid fa-copy text-emerald-400 text-xl animate-pulse"></i>
+                                            <div>
+                                                <div class="text-white font-bold text-sm">Copy account details below and proceed to payment</div>
+                                                <div class="text-slate-300 text-xs">Transfer the exact amount using your preferred mobile banking app or online portal.</div>
+                                            </div>
+                                        </div>
+
+                                        <!-- HIGH VISIBILITY BANK DETAILS BOX -->
+                                        <div class="bg-navy-950 p-6 rounded-2xl border-2 border-emerald-500/30 shadow-2xl space-y-4">
+                                            <div class="flex justify-between items-center border-b border-white/10 pb-3">
+                                                <span class="text-xs text-slate-400 font-semibold uppercase tracking-wider">OFFICIAL ESCROW BANK ACCOUNT (${cData.currency})</span>
+                                                <span class="bg-emerald-500/20 text-emerald-300 text-[10px] font-bold px-2.5 py-1 rounded-full border border-emerald-500/40">${cData.name}</span>
+                                            </div>
+
+                                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                                                <div class="bg-navy-900 p-3 rounded-xl border border-white/5">
+                                                    <span class="text-slate-400 block text-[10px] uppercase">Bank Name</span>
+                                                    <span class="text-white font-bold text-sm">SCAMTRACE SECURE ESCROW</span>
+                                                </div>
+
+                                                <div class="bg-navy-900 p-3 rounded-xl border border-white/5">
+                                                    <span class="text-slate-400 block text-[10px] uppercase">Account Name</span>
+                                                    <span class="text-white font-bold text-sm">SCAMTRACE GLOBAL INT CO</span>
+                                                </div>
+
+                                                <!-- Prominent Account Number with COPY Button -->
+                                                <div class="sm:col-span-2 bg-navy-900 p-4 rounded-xl border border-emerald-500/40 flex justify-between items-center">
+                                                    <div>
+                                                        <span class="text-slate-400 block text-[10px] uppercase">Account Number</span>
+                                                        <span class="text-emerald-400 font-mono font-extrabold text-xl tracking-wider">${sampleAccountNo}</span>
+                                                    </div>
+                                                    <button type="button" onclick="copyTextToClipboard('${sampleAccountNo}', 'Account Number')" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold px-4 py-2 rounded-lg text-xs flex items-center gap-1.5 shadow-md transition">
+                                                        <i class="fa-regular fa-copy"></i> Copy
+                                                    </button>
+                                                </div>
+
+                                                <div class="bg-navy-900 p-3 rounded-xl border border-white/5">
+                                                    <span class="text-slate-400 block text-[10px] uppercase">SWIFT / IBAN Code</span>
+                                                    <span class="text-white font-mono font-semibold">STGBUS33XXX</span>
+                                                </div>
+
+                                                <div class="bg-navy-900 p-3 rounded-xl border border-white/5 flex justify-between items-center">
+                                                    <div>
+                                                        <span class="text-slate-400 block text-[10px] uppercase">Transaction Reference</span>
+                                                        <span class="text-white font-mono font-bold text-xs">${sampleTxRef}</span>
+                                                    </div>
+                                                    <button type="button" onclick="copyTextToClipboard('${sampleTxRef}', 'Transaction Ref')" class="text-emerald-400 hover:text-emerald-300 text-xs font-semibold">
+                                                        <i class="fa-regular fa-copy"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Instructions Step-by-Step -->
+                                        <div class="bg-navy-900 p-4 rounded-xl border border-white/10 space-y-2 text-xs">
+                                            <div class="text-white font-bold mb-1 flex items-center gap-2">
+                                                <i class="fa-solid fa-list-check text-emerald-400"></i> Next Steps to Complete Payment:
+                                            </div>
+                                            <ol class="list-decimal list-inside text-slate-300 space-y-1 text-[11px] leading-relaxed">
+                                                <li>Copy the account details above and transfer <strong>${formatCurrency(selectedPlan.usdPrice)}</strong> via your banking application.</li>
+                                                <li>Use <strong>${sampleTxRef}</strong> as the payment memo/narration.</li>
+                                                <li>Click the <strong>"I Have Paid & Verify"</strong> button below to automatically confirm verification.</li>
+                                            </ol>
+                                        </div>
+
+                                        <button type="button" onclick="confirmPlanPayment('${selectedPlan.id}', '${sampleTxRef}', true)" class="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-bold py-4 rounded-xl shadow-xl shadow-emerald-500/20 text-xs flex items-center justify-center gap-2 transition hover:scale-[1.01]">
+                                            <i class="fa-solid fa-circle-check text-sm"></i>
+                                            <span>I Have Paid & Verify (${formatCurrency(selectedPlan.usdPrice)})</span>
+                                        </button>
+                                    </div>
+                                `}
+                            ` : ''}
+
+                            <!-- ... existing code for step 4 & step 5 ... -->
+                            ${step === 4 ? `
+                                <h3 class="font-display font-bold text-lg text-white mb-4 pb-2 border-b border-white/10">Step 4: Evidence & Document Intake</h3>
+                                <div class="space-y-4 text-xs">
+                                    <div>
+                                        <label class="block text-slate-300 mb-1">Narrative / Timeline Description *</label>
+                                        <textarea rows="4" required onchange="AppState.reportDraft.description=this.value" placeholder="Provide full details of events, promises, transaction hashes, and fake portal URLs..." class="w-full bg-navy-900 border border-white/10 rounded-lg p-2.5 text-white outline-none focus:border-emerald-500">${AppState.reportDraft.description}</textarea>
+                                    </div>
+
+                                    <div class="border-2 border-dashed border-white/20 hover:border-emerald-500 rounded-xl p-6 text-center bg-navy-900/50 cursor-pointer" onclick="simulateFileUpload()">
+                                        <i class="fa-solid fa-cloud-arrow-up text-3xl text-emerald-400 mb-2"></i>
+                                        <div class="text-white font-semibold">Click to Attach Evidence Screenshots / Receipts</div>
+                                        <div class="text-slate-400 text-[10px] mt-1">Files are SHA-256 stamped upon upload.</div>
+                                    </div>
+
+                                    <div id="uploaded-files-list" class="space-y-2">
+                                        ${AppState.reportDraft.files.length > 0 ? 
+                                            AppState.reportDraft.files.map((f) => `
+                                                <div class="flex justify-between items-center bg-navy-900 p-2.5 rounded-lg border border-white/10 text-xs">
+                                                    <span class="text-slate-200 font-mono"><i class="fa-solid fa-file-code text-emerald-400 mr-2"></i>${f}</span>
+                                                    <span class="text-[10px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded">SHA-256 OK</span>
+                                                </div>
+                                            `).join('') : '<div class="text-slate-500 text-center text-xs">No files attached yet. Click box to simulate upload.</div>'}
+                                    </div>
+                                </div>
+                            ` : ''}
+
+                            ${step === 5 ? `
+                                <h3 class="font-display font-bold text-lg text-white mb-4 pb-2 border-b border-white/10">Step 5: Consent & Final Registration</h3>
+                                <div class="bg-navy-900 p-4 rounded-xl border border-white/10 space-y-3 text-xs mb-6">
+                                    <div class="flex justify-between border-b border-white/5 pb-2">
+                                        <span class="text-slate-400">Complainant:</span>
+                                        <span class="text-white font-semibold">${AppState.reportDraft.fullName || 'Anonymous Victim'}</span>
+                                    </div>
+                                    <div class="flex justify-between border-b border-white/5 pb-2">
+                                        <span class="text-slate-400">Scam Type:</span>
+                                        <span class="text-emerald-400 font-semibold">${AppState.reportDraft.scamType}</span>
+                                    </div>
+                                    <div class="flex justify-between border-b border-white/5 pb-2">
+                                        <span class="text-slate-400">Paid Plan:</span>
+                                        <span class="text-white font-bold">${selectedPlan.name} (VERIFIED)</span>
+                                    </div>
+                                    <div class="flex justify-between border-b border-white/5 pb-2">
+                                        <span class="text-slate-400">Payment Reference:</span>
+                                        <span class="text-emerald-400 font-mono font-bold">${AppState.reportDraft.paymentTxRef}</span>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-start gap-3 text-xs text-slate-300">
+                                    <input type="checkbox" id="legal-consent" required class="mt-1 accent-emerald-500">
+                                    <label for="legal-consent">I certify that the information supplied is true and accurate. I understand SCAMTRACE GLOBAL provides forensic intelligence and evidence packages for law enforcement submission and does not guarantee fund recovery.</label>
+                                </div>
+                            ` : ''}
+
+                            <!-- Wizard Controls -->
+                            <div class="flex justify-between items-center mt-8 pt-4 border-t border-white/10">
+                                ${step > 1 ? `
+                                    <button type="button" onclick="navigateReportStep(${step - 1})" class="bg-navy-900 hover:bg-navy-800 text-slate-300 border border-white/10 text-xs font-semibold px-5 py-2.5 rounded-xl">
+                                        Previous Step
+                                    </button>
+                                ` : '<div></div>'}
+
+                                <button type="submit" class="bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-bold text-xs px-6 py-2.5 rounded-xl shadow-lg shadow-emerald-500/20">
+                                    ${step === 5 ? 'Register Report & Generate Case Ref' : 'Continue to Next Step'}
+                                </button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Updated Checkout Modal to include prominent visible account number & copy buttons
+        function openCheckoutModal(packageId, fromWizard = false) {
+            const pkg = AppState.packages[packageId];
+            if (!pkg) return;
+
+            const cData = AppState.countries[AppState.selectedCountry];
+            const localPriceFormatted = formatCurrency(pkg.usdPrice);
+            const accountNo = '9928-1029-4819';
+            const txRef = `STG-TX-${Math.floor(1000000 + Math.random() * 9000000)}`;
+
+            const modal = document.getElementById('global-modal');
+            const content = document.getElementById('modal-content');
+
+            content.innerHTML = `
+                <div class="p-6 sm:p-8">
+                    <button onclick="closeModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+
+                    <div class="text-center mb-6">
+                        <span class="text-emerald-400 font-semibold text-xs uppercase tracking-wider">Localized Checkout</span>
+                        <h3 class="font-display text-2xl font-bold text-white mt-1">${pkg.name}</h3>
+                        <div class="text-3xl font-extrabold text-emerald-400 font-mono mt-2">${localPriceFormatted}</div>
+                        <div class="text-xs text-slate-400 mt-1">${cData.name} (${cData.currency})</div>
+                    </div>
+
+                    <div class="bg-navy-900 p-4 rounded-xl border border-white/10 space-y-4 text-xs">
+                        
+                        <!-- Callout Alert Header -->
+                        <div class="bg-emerald-500/10 border-l-4 border-emerald-500 p-3 rounded-r-lg flex items-center gap-3">
+                            <i class="fa-solid fa-copy text-emerald-400 text-lg"></i>
+                            <div>
+                                <div class="text-white font-bold text-xs">Copy account details below and proceed to payment</div>
+                            </div>
+                        </div>
+
+                        <!-- HIGH VISIBILITY BANK DETAILS -->
+                        <div class="bg-navy-950 p-4 rounded-xl border border-emerald-500/40 space-y-3 font-mono text-[11px]">
+                            <div class="text-emerald-400 font-bold border-b border-white/10 pb-1 flex justify-between">
+                                <span>OFFICIAL ESCROW ACCOUNT</span>
+                                <span>${cData.currency}</span>
+                            </div>
+                            
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-400">Bank Name:</span>
+                                <span class="text-white font-bold">SCAMTRACE SECURE ESCROW</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-400">Account Name:</span>
+                                <span class="text-white font-bold">SCAMTRACE GLOBAL INT CO</span>
+                            </div>
+                            
+                            <!-- Visible Account Number & Copy Button -->
+                            <div class="p-2.5 bg-navy-900 rounded-lg border border-emerald-500/50 flex justify-between items-center my-1">
+                                <div>
+                                    <div class="text-[9px] text-slate-400 font-sans uppercase">Account Number</div>
+                                    <div class="text-emerald-400 font-bold text-base tracking-wider">${accountNo}</div>
+                                </div>
+                                <button type="button" onclick="copyTextToClipboard('${accountNo}', 'Account Number')" class="bg-emerald-500 hover:bg-emerald-600 text-white font-sans text-[11px] font-bold px-3 py-1.5 rounded flex items-center gap-1 transition">
+                                    <i class="fa-regular fa-copy"></i> Copy
+                                </button>
+                            </div>
+
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-400">Transaction Reference:</span>
+                                <span class="text-white font-bold">${txRef}</span>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <button onclick="confirmPlanPayment('${pkg.id}', '${txRef}', ${fromWizard})" class="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-emerald-500/20 text-xs mt-6 transition hover:scale-105">
+                        Verify & Complete Plan Payment (${localPriceFormatted})
+                    </button>
+                </div>
+            `;
+
+            modal.classList.remove('hidden');
+        }
+
+        function confirmPlanPayment(packageId, txRef, fromWizard) {
+            AppState.reportDraft.selectedPlanId = packageId;
+            AppState.reportDraft.paymentCompleted = true;
+            AppState.reportDraft.paymentTxRef = txRef;
+
+            closeModal();
+            showToast(`Payment Verified! TX Ref: ${txRef}`);
+
+            if (fromWizard) {
+                AppState.reportDraft.step = 4; // Move forward to Evidence Upload step
+                renderView('report');
+            } else {
+                AppState.reportDraft.step = 1;
+                navigateTo('report');
+            }
+        }
+
+        // Initialize Country Selector Options
+        function initCountrySelector() {
+            const select = document.getElementById('country-selector');
+            select.innerHTML = '';
+            for (const [code, data] of Object.entries(AppState.countries)) {
+                const opt = document.createElement('option');
+                opt.value = code;
+                opt.textContent = `${data.name} (${data.currency})`;
+                if (code === AppState.selectedCountry) opt.selected = true;
+                select.appendChild(opt);
+            }
+        }
+
+        // --- RENDER VIEW ENGINE ---
+        function renderView(view) {
+            const viewport = document.getElementById('app-viewport');
+            
+            switch (view) {
+                case 'home':
+                    viewport.innerHTML = renderHomeView();
+                    break;
+                case 'about':
+                    viewport.innerHTML = renderAboutView();
+                    break;
+                case 'services':
+                    viewport.innerHTML = renderServicesView();
+                    break;
+                case 'packages':
+                    viewport.innerHTML = renderPackagesView();
+                    break;
+                case 'how-it-works':
+                    viewport.innerHTML = renderHowItWorksView();
+                    break;
+                case 'report':
+                    viewport.innerHTML = renderReportFormView();
+                    break;
+                case 'track':
+                    viewport.innerHTML = renderTrackView();
+                    break;
+                case 'faq':
+                    viewport.innerHTML = renderFAQView();
+                    break;
+                case 'contact':
+                    viewport.innerHTML = renderContactView();
+                    break;
+                case 'customer-dash':
+                    viewport.innerHTML = renderCustomerDashboard();
+                    break;
+                case 'investigator-dash':
+                    viewport.innerHTML = renderInvestigatorDashboard();
+                    break;
+                case 'admin-dash':
+                    viewport.innerHTML = renderAdminDashboard();
+                    break;
+                case 'legal-privacy':
+                    viewport.innerHTML = renderLegalPrivacyView();
+                    break;
+                case 'legal-terms':
+                    viewport.innerHTML = renderLegalTermsView();
+                    break;
+                default:
+                    viewport.innerHTML = renderHomeView();
+            }
+        }
+
+        // --- VIEW GENERATORS ---
+
+        // 1. HOMEPAGE VIEW
+        function renderHomeView() {
+            return `
+                <!-- HERO SECTION -->
+                <section class="relative pt-12 pb-24 overflow-hidden border-b border-white/5">
+                    <div class="absolute inset-0 z-0 opacity-20 pointer-events-none">
+                        <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-emerald-500/20 rounded-full blur-[120px]"></div>
+                    </div>
+
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                            
+                            <!-- Left Content -->
+                            <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+                                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold">
+                                    <i class="fa-solid fa-shield-halved"></i>
+                                    <span>International Digital Forensics Bureau</span>
+                                </div>
+
+                                <h1 class="font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-tight">
+                                    Have You Been Scammed? <br>
+                                    <span class="bg-gradient-to-r from-emerald-400 to-teal-200 bg-clip-text text-transparent">We Investigate & Document Digital Fraud.</span>
+                                </h1>
+
+                                <p class="text-slate-300 text-base sm:text-lg max-w-2xl leading-relaxed mx-auto lg:mx-0">
+                                    Providing victims of cryptocurrency fraud, romance scams, investment schemes, and wire fraud with court-admissible forensic evidence dockets for law enforcement recovery.
+                                </p>
+
+                                <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
+                                    <button onclick="navigateTo('report')" class="w-full sm:w-auto bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-bold px-8 py-4 rounded-xl shadow-xl shadow-emerald-500/25 border border-emerald-400/30 flex items-center justify-center gap-3 transition transform hover:-translate-y-0.5">
+                                        <i class="fa-solid fa-file-shield text-lg"></i>
+                                        <span>File Incident Report Now</span>
+                                    </button>
+                                    <button onclick="navigateTo('services')" class="w-full sm:w-auto bg-navy-800 hover:bg-navy-700 border border-white/10 text-slate-200 font-semibold px-6 py-4 rounded-xl transition flex items-center justify-center gap-2">
+                                        <span>Explore Services</span>
+                                        <i class="fa-solid fa-arrow-right text-xs"></i>
+                                    </button>
+                                </div>
+
+                                <!-- Trust Indicators -->
+                                <div class="pt-8 border-t border-white/10 grid grid-cols-3 gap-4 text-left max-w-lg mx-auto lg:mx-0">
+                                    <div>
+                                        <div class="font-display text-xl font-bold text-white font-mono">1,400+</div>
+                                        <div class="text-xs text-slate-400">Dossiers Compiled</div>
+                                    </div>
+                                    <div>
+                                        <div class="font-display text-xl font-bold text-emerald-400 font-mono">48 Countries</div>
+                                        <div class="text-xs text-slate-400">Jurisdiction Traced</div>
+                                    </div>
+                                    <div>
+                                        <div class="font-display text-xl font-bold text-white font-mono">ISO 27001</div>
+                                        <div class="text-xs text-slate-400">Forensic Standards</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Right Visual Card -->
+                            <div class="lg:col-span-5">
+                                <div class="glass-card rounded-2xl p-6 relative border border-white/15 gradient-glow">
+                                    <div class="flex justify-between items-center pb-4 border-b border-white/10 mb-4">
+                                        <div class="flex items-center gap-2">
+                                            <span class="w-3 h-3 rounded-full bg-red-500"></span>
+                                            <span class="w-3 h-3 rounded-full bg-yellow-500"></span>
+                                            <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
+                                        </div>
+                                        <span class="text-xs font-mono text-emerald-400 flex items-center gap-1">
+                                            <i class="fa-solid fa-satellite-dish animate-pulse"></i> LIVE CASE FORENSICS
+                                        </span>
+                                    </div>
+
+                                    <!-- Mock Active Case Node Display -->
+                                    <div class="space-y-4 font-mono text-xs">
+                                        <div class="bg-navy-900/90 p-3 rounded-lg border border-white/5 space-y-1">
+                                            <div class="text-slate-400 flex justify-between">
+                                                <span>TX HASH HOPS:</span>
+                                                <span class="text-emerald-400">0x8a91...4e19</span>
+                                            </div>
+                                            <div class="text-white font-bold">ETH Mainnet -> Obfuscator Pool -> CEX Wallet</div>
+                                            <div class="w-full bg-navy-950 h-1.5 rounded-full overflow-hidden">
+                                                <div class="bg-emerald-500 h-full w-3/4"></div>
+                                            </div>
+                                        </div>
+
+                                        <div class="bg-navy-900/90 p-3 rounded-lg border border-white/5 space-y-1">
+                                            <div class="text-slate-400 flex justify-between">
+                                                <span>DOMAIN INTEL:</span>
+                                                <span class="text-warning font-bold">FLAGGED PHISHING</span>
+                                            </div>
+                                            <div class="text-white">Registrar: Private Protection Seychelles</div>
+                                            <div class="text-slate-400 text-[10px]">Identified Server IP: 185.220.101.4</div>
+                                        </div>
+
+                                        <div class="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-lg text-emerald-300 text-center font-sans font-medium">
+                                            <i class="fa-solid fa-certificate mr-1"></i> Legal Evidence Package Ready for Federal Referral
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SERVICES SUMMARY GRID -->
+                <section class="py-20 bg-navy-900/50">
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div class="text-center max-w-3xl mx-auto mb-16 space-y-3">
+                            <h2 class="text-emerald-400 font-semibold tracking-wider text-xs uppercase">Targeted Forensics</h2>
+                            <h3 class="font-display text-3xl sm:text-4xl font-bold text-white">Specialized Fraud Investigation Services</h3>
+                            <p class="text-slate-400 text-sm">We provide meticulous digital trace analysis customized for specific online fraud vectors.</p>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            
+                            <!-- Card 1 -->
+                            <div class="glass-card p-6 rounded-2xl border border-white/10 hover:border-emerald-500/40 transition group">
+                                <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl mb-4 group-hover:bg-emerald-500 group-hover:text-white transition">
+                                    <i class="fa-brands fa-bitcoin"></i>
+                                </div>
+                                <h4 class="font-display font-bold text-lg text-white mb-2">Cryptocurrency Tracing</h4>
+                                <p class="text-slate-400 text-xs leading-relaxed mb-4">Blockchain ledger analysis, tracking stolen BTC, ETH, USDT across multiple wallet hops directly to centralized exchange cashout endpoints.</p>
+                                <a href="#" onclick="navigateTo('services'); return false;" class="text-emerald-400 hover:text-emerald-300 text-xs font-semibold flex items-center gap-1">Read Forensics Scope <i class="fa-solid fa-chevron-right text-[10px]"></i></a>
+                            </div>
+
+                            <!-- Card 2 -->
+                            <div class="glass-card p-6 rounded-2xl border border-white/10 hover:border-emerald-500/40 transition group">
+                                <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl mb-4 group-hover:bg-emerald-500 group-hover:text-white transition">
+                                    <i class="fa-solid fa-chart-line"></i>
+                                </div>
+                                <h4 class="font-display font-bold text-lg text-white mb-2">Investment & Forex Fraud</h4>
+                                <p class="text-slate-400 text-xs leading-relaxed mb-4">Investigating fraudulent trading portals, fake yield algorithms, unregistered brokerages, and boiler-room investment syndicates.</p>
+                                <a href="#" onclick="navigateTo('services'); return false;" class="text-emerald-400 hover:text-emerald-300 text-xs font-semibold flex items-center gap-1">Read Forensics Scope <i class="fa-solid fa-chevron-right text-[10px]"></i></a>
+                            </div>
+
+                            <!-- Card 3 -->
+                            <div class="glass-card p-6 rounded-2xl border border-white/10 hover:border-emerald-500/40 transition group">
+                                <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl mb-4 group-hover:bg-emerald-500 group-hover:text-white transition">
+                                    <i class="fa-solid fa-heart-crack"></i>
+                                </div>
+                                <h4 class="font-display font-bold text-lg text-white mb-2">Romance & Identity Scam</h4>
+                                <p class="text-slate-400 text-xs leading-relaxed mb-4">Deep identity verification, stolen photo metadata extraction, money mule bank account tracking, and catfishing profile unmasking.</p>
+                                <a href="#" onclick="navigateTo('services'); return false;" class="text-emerald-400 hover:text-emerald-300 text-xs font-semibold flex items-center gap-1">Read Forensics Scope <i class="fa-solid fa-chevron-right text-[10px]"></i></a>
+                            </div>
+
+                        </div>
+                    </div>
+                </section>
+
+                <!-- INVESTIGATION METHODOLOGY BANNER -->
+                <section class="py-20 border-t border-white/5">
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                            <div>
+                                <h2 class="text-emerald-400 font-semibold tracking-wider text-xs uppercase mb-2">Strict Standards</h2>
+                                <h3 class="font-display text-3xl font-bold text-white mb-6">How We Ensure Admissible Forensic Evidence</h3>
+                                <div class="space-y-4 text-sm text-slate-300">
+                                    <div class="flex items-start gap-3">
+                                        <div class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs mt-0.5"><i class="fa-solid fa-check"></i></div>
+                                        <div><strong class="text-white">Cryptographic Hashing:</strong> All uploaded chats, receipts, and headers are SHA-256 timestamped for strict chain-of-custody.</div>
+                                    </div>
+                                    <div class="flex items-start gap-3">
+                                        <div class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs mt-0.5"><i class="fa-solid fa-check"></i></div>
+                                        <div><strong class="text-white">Law Enforcement Ready:</strong> Our reports follow standard federal cybercrime reporting formats accepted by FBI IC3, Europol, and national police units.</div>
+                                    </div>
+                                    <div class="flex items-start gap-3">
+                                        <div class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs mt-0.5"><i class="fa-solid fa-check"></i></div>
+                                        <div><strong class="text-white">No False Promises:</strong> We do not conduct unauthorized network penetrations or guarantee fund retrieval, adhering strictly to legal mandates.</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-navy-800 p-8 rounded-2xl border border-white/10 text-center space-y-4">
+                                <i class="fa-solid fa-building-columns text-4xl text-emerald-400"></i>
+                                <h4 class="font-display font-bold text-xl text-white">Need Official Evidence Package?</h4>
+                                <p class="text-xs text-slate-400 leading-relaxed">Select a suitable investigation package tailored to your loss tier. Pricing is transparent and localized to your currency.</p>
+                                <button onclick="navigateTo('packages')" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold px-6 py-3 rounded-xl text-xs transition">View Local Pricing Packages</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            `;
+        }
+
+        // 2. ABOUT US VIEW
+        function renderAboutView() {
+            return `
+                <div class="max-w-5xl mx-auto px-4 py-16">
+                    <div class="text-center mb-12">
+                        <h1 class="font-display text-4xl font-extrabold text-white mb-4">About SCAMTRACE GLOBAL</h1>
+                        <p class="text-slate-400 text-base max-w-2xl mx-auto">An independent international digital forensics organisation focused on exposing cyber fraudsters, tracking illicit asset flows, and empowering victims.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+                        <div class="glass-card p-6 rounded-2xl border border-white/10">
+                            <h3 class="font-display font-bold text-xl text-emerald-400 mb-3"><i class="fa-solid fa-bullseye mr-2"></i> Our Mission</h3>
+                            <p class="text-slate-300 text-sm leading-relaxed">To bridge the gap between cybercrime victims and legal resolution by generating court-ready forensic reports, tracing complex financial movements, and identifying bad actors operating across international borders.</p>
+                        </div>
+
+                        <div class="glass-card p-6 rounded-2xl border border-white/10">
+                            <h3 class="font-display font-bold text-xl text-emerald-400 mb-3"><i class="fa-solid fa-scale-balanced mr-2"></i> Forensic Integrity</h3>
+                            <p class="text-slate-300 text-sm leading-relaxed">We maintain rigid ISO/IEC 27001 data management protocols. Every piece of evidence submitted undergoes SHA-256 cryptographic hashing to ensure chain of custody for legal presentation.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-navy-800 p-8 rounded-2xl border border-white/10 space-y-4">
+                        <h3 class="font-display font-bold text-xl text-white">Ethical Standards & Regulatory Notice</h3>
+                        <p class="text-slate-400 text-xs leading-relaxed">SCAMTRACE GLOBAL is a private cyber intelligence firm. We do not provide private vigilante hackbacks or make false guarantees of fund recovery. Asset recovery is executed through legal subpoenas, exchange freezes, and law enforcement directives using our verified forensic dockets.</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 3. INVESTIGATION SERVICES VIEW
+        function renderServicesView() {
+            return `
+                <div class="max-w-7xl mx-auto px-4 py-16">
+                    <div class="text-center mb-16 space-y-3">
+                        <h1 class="font-display text-4xl font-extrabold text-white">Digital Forensics & Investigation Services</h1>
+                        <p class="text-slate-400 text-sm max-w-2xl mx-auto">Comprehensive evidence gathering and technical investigation for all major cyber scam categories.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        ${[
+                            { title: 'Cryptocurrency Asset Tracing', icon: 'fa-bitcoin', desc: 'UTXO & Account-based blockchain hop analysis, cluster identification, and CEX deposit identification.' },
+                            { title: 'Investment Fraud & Boiler Rooms', icon: 'fa-chart-line', desc: 'Domain infrastructure tracing, fraudulent MT4/MT5 platform audits, and broker registry lookup.' },
+                            { title: 'Romance Scam & Catfishing', icon: 'fa-heart-crack', desc: 'Reverse image profiling, metadata extraction, money mule bank account mapping, and profile origin tracing.' },
+                            { title: 'Business Email Compromise (BEC)', icon: 'fa-envelope-open-text', desc: 'Email header forensics, DKIM/SPF verification, impersonation domain takedowns, and wire recall packages.' },
+                            { title: 'Phishing & Fake Website Audit', icon: 'fa-globe', desc: 'Malicious domain registrar WHOIS analysis, server IP geolocation, and hosting provider abuse notifications.' },
+                            { title: 'Bank Transfer Fraud Docket', icon: 'fa-piggy-bank', desc: 'Money mule account identification, swift code wire tracing, and bank compliance dossier prep.' }
+                        ].map(s => `
+                            <div class="glass-card p-6 rounded-2xl border border-white/10 flex flex-col justify-between">
+                                <div>
+                                    <div class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-xl mb-4">
+                                        <i class="fa-solid ${s.icon}"></i>
+                                    </div>
+                                    <h3 class="font-display font-bold text-lg text-white mb-2">${s.title}</h3>
+                                    <p class="text-slate-400 text-xs leading-relaxed mb-4">${s.desc}</p>
+                                </div>
+                                <button onclick="navigateTo('report')" class="w-full bg-white/5 hover:bg-emerald-500 hover:text-white border border-white/10 text-emerald-400 text-xs font-semibold py-2.5 rounded-xl transition">
+                                    Report This Incident Type
+                                </button>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // 4. INVESTIGATION PACKAGES & PRICING VIEW
+        function renderPackagesView() {
+            return `
+                <div class="max-w-7xl mx-auto px-4 py-16">
+                    <div class="text-center mb-12 space-y-3">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-semibold border border-emerald-500/30">
+                            Localized Pricing Engine (${AppState.currency})
+                        </div>
+                        <h1 class="font-display text-4xl font-extrabold text-white">Official Investigation Packages</h1>
+                        <p class="text-slate-400 text-sm max-w-2xl mx-auto">Transparent forensic investigation rates calibrated automatically for your country: <strong class="text-white">${AppState.countries[AppState.selectedCountry].name}</strong>.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        ${Object.values(AppState.packages).map(pkg => `
+                            <div class="glass-card p-6 rounded-2xl border border-white/10 flex flex-col justify-between relative hover:border-emerald-500/50 transition">
+                                ${pkg.id === 'standard' ? '<span class="absolute -top-3 right-4 bg-emerald-500 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg">MOST POPULAR</span>' : ''}
+                                <div>
+                                    <h3 class="font-display font-bold text-lg text-white mb-1">${pkg.name}</h3>
+                                    <div class="text-xs text-slate-400 mb-4">${pkg.timeline}</div>
+
+                                    <div class="text-2xl font-extrabold text-emerald-400 font-mono mb-4">
+                                        ${formatCurrency(pkg.usdPrice)}
+                                    </div>
+
+                                    <p class="text-slate-300 text-xs leading-relaxed mb-6 border-t border-white/10 pt-4">
+                                        ${pkg.scope}
+                                    </p>
+                                </div>
+
+                                <button onclick="openCheckoutModal('${pkg.id}')" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 rounded-xl text-xs shadow-lg shadow-emerald-500/20 transition">
+                                    Select ${pkg.name}
+                                </button>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <div class="mt-12 text-center text-xs text-slate-400">
+                        * All packages include encrypted evidence store & standard PDF dossier for law enforcement submission.
+                    </div>
+                </div>
+            `;
+        }
+
+        // 5. METHODOLOGY / HOW IT WORKS VIEW
+        function renderHowItWorksView() {
+            return `
+                <div class="max-w-5xl mx-auto px-4 py-16">
+                    <div class="text-center mb-16">
+                        <h1 class="font-display text-4xl font-extrabold text-white mb-3">Our Forensic Investigation Process</h1>
+                        <p class="text-slate-400 text-sm">Step-by-step methodology from initial incident filing to law enforcement package delivery.</p>
+                    </div>
+
+                    <div class="space-y-8">
+                        ${[
+                            { step: '01', title: 'Incident Intake & Evidence Upload', desc: 'Submit scam details, communication transcripts, wallet addresses, and wire receipts through our multi-step encrypted form.' },
+                            { step: '02', title: 'Cryptographic Hashing & Verification', desc: 'Our lab verifies file integrity and stamps all evidence with SHA-256 cryptographic hashes for court admissibility.' },
+                            { step: '03', title: 'Technical Tracing & Geolocation', desc: 'Forensic investigators trace cryptocurrency hops, analyze email IP headers, cross-reference domain records, and identify money mules.' },
+                            { step: '04', title: 'Dossier Compilation & Agency Referral', desc: 'We generate an official standardized investigation report ready for direct submission to legal authorities and financial institutions.' }
+                        ].map(s => `
+                            <div class="glass-card p-6 rounded-2xl border border-white/10 flex items-start gap-6">
+                                <div class="font-display text-3xl font-extrabold text-emerald-400 font-mono bg-emerald-500/10 px-4 py-2 rounded-xl border border-emerald-500/20">
+                                    ${s.step}
+                                </div>
+                                <div>
+                                    <h3 class="font-display font-bold text-lg text-white mb-1">${s.title}</h3>
+                                    <p class="text-slate-300 text-xs leading-relaxed">${s.desc}</p>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // 6. SCAM REPORTING MULTI-STEP WIZARD VIEW
+        function renderReportFormView() {
+            const step = AppState.reportDraft.step;
+
+            return `
+                <div class="max-w-4xl mx-auto px-4 py-12">
+                    <!-- Header -->
+                    <div class="text-center mb-8">
+                        <h1 class="font-display text-3xl font-bold text-white">File an Official Scam Report</h1>
+                        <p class="text-xs text-slate-400 mt-1">Multi-step encrypted intake wizard</p>
+                    </div>
+
+                    <!-- Step Progress Indicator -->
+                    <div class="grid grid-cols-5 gap-2 mb-8 text-center text-xs">
+                        ${[1, 2, 3, 4, 5].map(i => `
+                            <div class="py-2 rounded-lg border ${i === step ? 'bg-emerald-500 border-emerald-400 text-white font-bold' : (i < step ? 'bg-navy-800 border-emerald-500/50 text-emerald-400' : 'bg-navy-900 border-white/10 text-slate-500')}">
+                                Step ${i}
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <!-- Wizard Card -->
+                    <div class="glass-card p-6 sm:p-8 rounded-2xl border border-white/10">
+                        <form onsubmit="handleReportStepSubmit(event)">
+                            
+                            ${step === 1 ? `
+                                <h3 class="font-display font-bold text-lg text-white mb-4 pb-2 border-b border-white/10">Step 1: Victim Personal Details</h3>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                                    <div>
+                                        <label class="block text-slate-300 mb-1">Full Legal Name *</label>
+                                        <input type="text" required value="${AppState.reportDraft.fullName}" onchange="AppState.reportDraft.fullName=this.value" class="w-full bg-navy-900 border border-white/10 rounded-lg p-2.5 text-white focus:border-emerald-500 outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block text-slate-300 mb-1">Email Address (For Case Updates) *</label>
+                                        <input type="email" required value="${AppState.reportDraft.email}" onchange="AppState.reportDraft.email=this.value" class="w-full bg-navy-900 border border-white/10 rounded-lg p-2.5 text-white focus:border-emerald-500 outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block text-slate-300 mb-1">Phone Number</label>
+                                        <input type="text" value="${AppState.reportDraft.phone}" onchange="AppState.reportDraft.phone=this.value" placeholder="${AppState.countries[AppState.selectedCountry].code} 000 0000" class="w-full bg-navy-900 border border-white/10 rounded-lg p-2.5 text-white focus:border-emerald-500 outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block text-slate-300 mb-1">Country of Residence</label>
+                                        <select onchange="AppState.reportDraft.country=this.value" class="w-full bg-navy-900 border border-white/10 rounded-lg p-2.5 text-white focus:border-emerald-500 outline-none">
+                                            ${Object.keys(AppState.countries).map(c => `<option value="${c}" ${c === AppState.reportDraft.country ? 'selected' : ''}>${AppState.countries[c].name}</option>`).join('')}
+                                        </select>
+                                    </div>
+                                </div>
+                            ` : ''}
+
+                            ${step === 2 ? `
+                                <h3 class="font-display font-bold text-lg text-white mb-4 pb-2 border-b border-white/10">Step 2: Fraud & Scammer Information</h3>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                                    <div>
+                                        <label class="block text-slate-300 mb-1">Scam Type Category *</label>
+                                        <select onchange="AppState.reportDraft.scamType=this.value" class="w-full bg-navy-900 border border-white/10 rounded-lg p-2.5 text-white focus:border-emerald-500 outline-none">
+                                            <option>Cryptocurrency Fraud</option>
+                                            <option>Investment & Forex Platform Scam</option>
+                                            <option>Romance & Social Media Fraud</option>
+                                            <option>Business Email Compromise (BEC)</option>
+                                            <option>Online Shopping / Fake Store</option>
+                                            <option>Phishing & Identity Theft</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-slate-300 mb-1">Scammer Name / Entity / Alias</label>
+                                        <input type="text" value="${AppState.reportDraft.scammerName}" onchange="AppState.reportDraft.scammerName=this.value" placeholder="e.g. Apex Crypto Trading Platform" class="w-full bg-navy-900 border border-white/10 rounded-lg p-2.5 text-white focus:border-emerald-500 outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block text-slate-300 mb-1">Scammer Contact (Email / Phone / Telegram)</label>
+                                        <input type="text" value="${AppState.reportDraft.scammerContact}" onchange="AppState.reportDraft.scammerContact=this.value" placeholder="@scammer_handle or email" class="w-full bg-navy-900 border border-white/10 rounded-lg p-2.5 text-white focus:border-emerald-500 outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block text-slate-300 mb-1">Estimated Financial Loss *</label>
+                                        <input type="text" required value="${AppState.reportDraft.amountLost}" onchange="AppState.reportDraft.amountLost=this.value" placeholder="e.g. $15,000 USD or 2.5 BTC" class="w-full bg-navy-900 border border-white/10 rounded-lg p-2.5 text-white focus:border-emerald-500 outline-none">
+                                    </div>
+                                </div>
+                            ` : ''}
+
+                            ${step === 3 ? `
+                                <h3 class="font-display font-bold text-lg text-white mb-4 pb-2 border-b border-white/10">Step 3: Detailed Incident Description</h3>
+                                <div class="space-y-4 text-xs">
+                                    <div>
+                                        <label class="block text-slate-300 mb-1">How were you first contacted? *</label>
+                                        <input type="text" placeholder="e.g. WhatsApp message, Instagram DM, LinkedIn connection" class="w-full bg-navy-900 border border-white/10 rounded-lg p-2.5 text-white focus:border-emerald-500 outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block text-slate-300 mb-1">Chronological Summary of Incident *</label>
+                                        <textarea rows="5" required onchange="AppState.reportDraft.description=this.value" placeholder="Describe the timeline, promises made, initial deposits, and when withdrawals were denied..." class="w-full bg-navy-900 border border-white/10 rounded-lg p-2.5 text-white focus:border-emerald-500 outline-none">${AppState.reportDraft.description}</textarea>
+                                    </div>
+                                </div>
+                            ` : ''}
+
+                            ${step === 4 ? `
+                                <h3 class="font-display font-bold text-lg text-white mb-4 pb-2 border-b border-white/10">Step 4: Evidence & Document Upload</h3>
+                                <div class="space-y-4 text-xs">
+                                    <div class="border-2 border-dashed border-white/20 hover:border-emerald-500 rounded-xl p-8 text-center bg-navy-900/50 cursor-pointer" onclick="simulateFileUpload()">
+                                        <i class="fa-solid fa-cloud-arrow-up text-3xl text-emerald-400 mb-2"></i>
+                                        <div class="text-white font-semibold">Click to upload Evidence Screenshots / Receipts</div>
+                                        <div class="text-slate-400 text-[10px] mt-1">Supports PNG, JPG, PDF, TXT up to 25MB each. SHA-256 Auto-Stamped.</div>
+                                    </div>
+
+                                    <div id="uploaded-files-list" class="space-y-2">
+                                        ${AppState.reportDraft.files.length > 0 ? 
+                                            AppState.reportDraft.files.map((f, idx) => `
+                                                <div class="flex justify-between items-center bg-navy-900 p-2.5 rounded-lg border border-white/10 text-xs">
+                                                    <span class="text-slate-200 font-mono"><i class="fa-solid fa-file-code text-emerald-400 mr-2"></i>${f}</span>
+                                                    <span class="text-[10px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded">SHA-256 OK</span>
+                                                </div>
+                                            `).join('') : '<div class="text-slate-500 text-center text-xs">No files uploaded yet. Click above to attach evidence.</div>'}
+                                    </div>
+                                </div>
+                            ` : ''}
+
+                            ${step === 5 ? `
+                                <h3 class="font-display font-bold text-lg text-white mb-4 pb-2 border-b border-white/10">Step 5: Review & Formal Declaration</h3>
+                                <div class="bg-navy-900 p-4 rounded-xl border border-white/10 space-y-3 text-xs mb-6">
+                                    <div class="flex justify-between border-b border-white/5 pb-2">
+                                        <span class="text-slate-400">Complainant:</span>
+                                        <span class="text-white font-semibold">${AppState.reportDraft.fullName || 'Alexander Wright'}</span>
+                                    </div>
+                                    <div class="flex justify-between border-b border-white/5 pb-2">
+                                        <span class="text-slate-400">Scam Category:</span>
+                                        <span class="text-emerald-400 font-semibold">${AppState.reportDraft.scamType}</span>
+                                    </div>
+                                    <div class="flex justify-between border-b border-white/5 pb-2">
+                                        <span class="text-slate-400">Claimed Financial Loss:</span>
+                                        <span class="text-white font-mono font-bold">${AppState.reportDraft.amountLost || '$25,000 USD'}</span>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-start gap-3 text-xs text-slate-300">
+                                    <input type="checkbox" id="legal-consent" required class="mt-1 accent-emerald-500">
+                                    <label for="legal-consent">I hereby certify under penalty of perjury that the evidence and statement provided above are true to the best of my knowledge. I understand SCAMTRACE GLOBAL provides investigation dockets for legal submission.</label>
+                                </div>
+                            ` : ''}
+
+                            <!-- Wizard Navigation Controls -->
+                            <div class="flex justify-between items-center mt-8 pt-4 border-t border-white/10">
+                                ${step > 1 ? `
+                                    <button type="button" onclick="navigateReportStep(${step - 1})" class="bg-navy-900 hover:bg-navy-800 text-slate-300 border border-white/10 text-xs font-semibold px-5 py-2.5 rounded-xl">
+                                        Previous Step
+                                    </button>
+                                ` : '<div></div>'}
+
+                                <button type="submit" class="bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-bold text-xs px-6 py-2.5 rounded-xl shadow-lg shadow-emerald-500/20">
+                                    ${step === 5 ? 'Submit Report & Generate Case ID' : 'Continue to Next Step'}
+                                </button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            `;
+        }
+
+        function navigateReportStep(targetStep) {
+            AppState.reportDraft.step = targetStep;
+            renderView('report');
+        }
+
+        function simulateFileUpload() {
+            const mockFiles = ['wallet_transaction_txhash.png', 'telegram_chat_history.pdf', 'wire_receipt_scam.pdf'];
+            const randomFile = mockFiles[Math.floor(Math.random() * mockFiles.length)];
+            AppState.reportDraft.files.push(randomFile);
+            showToast(`Attached evidence: ${randomFile}`);
+            renderView('report');
+        }
+
+        function handleReportStepSubmit(e) {
+            e.preventDefault();
+            if (AppState.reportDraft.step < 5) {
+                AppState.reportDraft.step++;
+                renderView('report');
+            } else {
+                // Final submission
+                const newRef = `STG-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+                const newCase = {
+                    ref: newRef,
+                    date: new Date().toISOString().split('T')[0],
+                    category: AppState.reportDraft.scamType,
+                    victim: AppState.reportDraft.fullName || 'Alexander Wright',
+                    email: AppState.reportDraft.email || 'alex.wright@example.com',
+                    country: AppState.reportDraft.country,
+                    scammer: AppState.reportDraft.scammerName || 'Unknown Entity',
+                    amount: AppState.reportDraft.amountLost || '$10,000',
+                    status: 'Report Submitted',
+                    package: 'Awaiting Selection',
+                    paymentStatus: 'UNPAID',
+                    investigator: 'Unassigned',
+                    timeline: [
+                        { time: new Date().toLocaleString(), title: 'Report Submitted', detail: 'Formal intake completed and assigned Case ID.' }
+                    ],
+                    evidenceFiles: AppState.reportDraft.files.length > 0 ? AppState.reportDraft.files : ['intake_dossier.pdf']
+                };
+
+                AppState.cases.unshift(newCase);
+                AppState.reportDraft.step = 1; // Reset
+
+                showToast(`Report Submitted! Reference Number: ${newRef}`);
+                
+                // Route to track case page automatically
+                document.getElementById('track-ref-input').value = newRef;
+                navigateTo('track');
+            }
+        }
+
+        // 7. TRACK MY CASE VIEW
+        function renderTrackView() {
+            return `
+                <div class="max-w-4xl mx-auto px-4 py-16">
+                    <div class="text-center mb-10">
+                        <h1 class="font-display text-3xl font-extrabold text-white">Track Investigation Case</h1>
+                        <p class="text-xs text-slate-400 mt-1">Enter your case reference number (e.g. STG-2026-8819) to check live status</p>
+                    </div>
+
+                    <!-- Search Input Box -->
+                    <div class="glass-card p-6 rounded-2xl border border-white/10 mb-8 max-w-xl mx-auto">
+                        <form onsubmit="handleCaseLookup(event)" class="flex gap-3">
+                            <input type="text" id="track-ref-input" required placeholder="Enter Case Ref (e.g. STG-2026-8819)" value="STG-2026-8819" class="w-full bg-navy-900 border border-white/10 rounded-xl px-4 py-3 text-sm text-white font-mono outline-none focus:border-emerald-500">
+                            <button type="submit" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold px-6 py-3 rounded-xl text-xs transition">Lookup</button>
+                        </form>
+                    </div>
+
+                    <!-- Lookup Result Display -->
+                    <div id="track-results-container">
+                        ${renderCaseTimeline(AppState.cases[0])}
+                    </div>
+                </div>
+            `;
+        }
+
+        function handleCaseLookup(e) {
+            e.preventDefault();
+            const ref = document.getElementById('track-ref-input').value.trim();
+            const found = AppState.cases.find(c => c.ref.toLowerCase() === ref.toLowerCase());
+            
+            const container = document.getElementById('track-results-container');
+            if (found) {
+                container.innerHTML = renderCaseTimeline(found);
+                showToast(`Loaded details for Case #${found.ref}`);
+            } else {
+                container.innerHTML = `
+                    <div class="text-center py-12 glass-card rounded-2xl border border-red-500/30">
+                        <i class="fa-solid fa-triangle-exclamation text-3xl text-red-400 mb-2"></i>
+                        <h3 class="text-white font-bold text-lg">Case Reference Not Found</h3>
+                        <p class="text-xs text-slate-400 mt-1">Please double check your STG reference number or log into your client portal.</p>
+                    </div>
+                `;
+            }
+        }
+
+        function renderCaseTimeline(cData) {
+            if (!cData) return '';
+            return `
+                <div class="glass-card p-6 sm:p-8 rounded-2xl border border-white/10 space-y-6">
+                    <div class="flex flex-col sm:flex-row justify-between sm:items-center pb-6 border-b border-white/10 gap-4">
+                        <div>
+                            <div class="text-xs text-emerald-400 font-mono font-semibold">${cData.ref}</div>
+                            <h2 class="font-display font-bold text-2xl text-white">${cData.category}</h2>
+                            <div class="text-xs text-slate-400 mt-1">Submitted: ${cData.date} | Victim: ${cData.victim}</div>
+                        </div>
+                        <div class="text-right">
+                            <span class="inline-block bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded-full text-xs font-bold">${cData.status}</span>
+                            <div class="text-xs text-slate-400 mt-1">Payment: <span class="text-white font-semibold">${cData.paymentStatus}</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Timeline Vertical Steps -->
+                    <div>
+                        <h4 class="font-display font-bold text-white text-sm mb-4">Forensic Case Progress Log</h4>
+                        <div class="space-y-4 border-l-2 border-emerald-500/30 pl-4 ml-2">
+                            ${cData.timeline.map(t => `
+                                <div class="relative">
+                                    <div class="w-3 h-3 rounded-full bg-emerald-500 absolute -left-[23px] top-1 border-2 border-navy-900"></div>
+                                    <div class="text-[11px] font-mono text-slate-400">${t.time}</div>
+                                    <div class="text-white font-semibold text-xs">${t.title}</div>
+                                    <div class="text-slate-300 text-xs mt-0.5">${t.detail}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 8. FAQ VIEW
+        function renderFAQView() {
+            const faqs = [
+                { q: "Can SCAMTRACE GLOBAL guarantee the return of my stolen funds?", a: "No private cyber agency can legally guarantee fund recovery. We gather SHA-256 verifiable forensic evidence and trace asset movements across blockchain and banking channels so legal authorities can execute freezes." },
+                { q: "How do you handle currency conversion?", a: "Our platform features a real-time localization engine supporting over 15 currencies. Package pricing automatically converts based on official global exchange rates." },
+                { q: "Are your forensic dockets accepted by police and courts?", a: "Yes. Our dockets adhere to ISO/IEC 27001 chain-of-custody standards and match standards required by FBI IC3, Europol, and international judicial bodies." },
+                { q: "What evidence should I provide when filing?", a: "Provide transaction hashes (TXIDs), bank wire confirmations, email headers, screenshots of chat conversations, and domain URLs." }
+            ];
+
+            return `
+                <div class="max-w-4xl mx-auto px-4 py-16">
+                    <div class="text-center mb-12">
+                        <h1 class="font-display text-4xl font-extrabold text-white mb-2">Frequently Asked Questions</h1>
+                        <p class="text-xs text-slate-400">Clear answers regarding digital fraud investigation procedures</p>
+                    </div>
+
+                    <div class="space-y-4">
+                        ${faqs.map((f, i) => `
+                            <div class="glass-card p-6 rounded-2xl border border-white/10">
+                                <h3 class="font-display font-bold text-base text-white mb-2"><i class="fa-solid fa-circle-question text-emerald-400 mr-2"></i> ${f.q}</h3>
+                                <p class="text-slate-300 text-xs leading-relaxed pl-7">${f.a}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // 9. CONTACT VIEW
+        function renderContactView() {
+            return `
+                <div class="max-w-4xl mx-auto px-4 py-16">
+                    <div class="text-center mb-12">
+                        <h1 class="font-display text-4xl font-extrabold text-white mb-2">Contact Investigations Office</h1>
+                        <p class="text-xs text-slate-400">Direct encrypted line to forensic desk</p>
+                    </div>
+
+                    <div class="glass-card p-8 rounded-2xl border border-white/10 max-w-2xl mx-auto">
+                        <form onsubmit="event.preventDefault(); showToast('Inquiry received. A forensic coordinator will respond within 2 hours.');" class="space-y-4 text-xs">
+                            <div>
+                                <label class="block text-slate-300 mb-1">Your Name</label>
+                                <input type="text" required class="w-full bg-navy-900 border border-white/10 rounded-lg p-2.5 text-white outline-none focus:border-emerald-500">
+                            </div>
+                            <div>
+                                <label class="block text-slate-300 mb-1">Email Address</label>
+                                <input type="email" required class="w-full bg-navy-900 border border-white/10 rounded-lg p-2.5 text-white outline-none focus:border-emerald-500">
+                            </div>
+                            <div>
+                                <label class="block text-slate-300 mb-1">Message / Incident Brief</label>
+                                <textarea rows="4" required class="w-full bg-navy-900 border border-white/10 rounded-lg p-2.5 text-white outline-none focus:border-emerald-500"></textarea>
+                            </div>
+                            <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 rounded-xl transition">Send Secure Message</button>
+                        </form>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 10. CUSTOMER DASHBOARD VIEW
+        function renderCustomerDashboard() {
+            return `
+                <div class="max-w-7xl mx-auto px-4 py-12">
+                    <div class="flex justify-between items-center mb-8">
+                        <div>
+                            <h1 class="font-display text-3xl font-bold text-white">Client Case Vault</h1>
+                            <p class="text-xs text-slate-400 mt-1">Logged in as: <strong class="text-emerald-400">${AppState.currentUser?.email || 'Client'}</strong></p>
+                        </div>
+                        <button onclick="navigateTo('report')" class="bg-emerald-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl">File New Report</button>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <div class="glass-card p-5 rounded-2xl border border-white/10">
+                            <div class="text-xs text-slate-400">Active Cases</div>
+                            <div class="text-2xl font-bold text-white mt-1">${AppState.cases.length}</div>
+                        </div>
+                        <div class="glass-card p-5 rounded-2xl border border-white/10">
+                            <div class="text-xs text-slate-400">Total Forensics Dossiers</div>
+                            <div class="text-2xl font-bold text-emerald-400 mt-1">2 Verified</div>
+                        </div>
+                        <div class="glass-card p-5 rounded-2xl border border-white/10">
+                            <div class="text-xs text-slate-400">Active Country Settings</div>
+                            <div class="text-2xl font-bold text-white mt-1">${AppState.selectedCountry} (${AppState.currency})</div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card p-6 rounded-2xl border border-white/10">
+                        <h3 class="font-display font-bold text-lg text-white mb-4">Your Case History</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-xs">
+                                <thead class="bg-navy-900 text-slate-400 border-b border-white/10">
+                                    <tr>
+                                        <th class="p-3">Ref ID</th>
+                                        <th class="p-3">Category</th>
+                                        <th class="p-3">Claim Amount</th>
+                                        <th class="p-3">Status</th>
+                                        <th class="p-3">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-white/5 text-slate-300">
+                                    ${AppState.cases.map(c => `
+                                        <tr>
+                                            <td class="p-3 font-mono text-emerald-400">${c.ref}</td>
+                                            <td class="p-3">${c.category}</td>
+                                            <td class="p-3 font-mono">${c.amount}</td>
+                                            <td class="p-3"><span class="bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded text-[10px] border border-emerald-500/20">${c.status}</span></td>
+                                            <td class="p-3">
+                                                <button onclick="document.getElementById('track-ref-input').value='${c.ref}'; navigateTo('track');" class="text-emerald-400 underline hover:text-white">View Timeline</button>
+                                            </td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 11. INVESTIGATOR DASHBOARD VIEW
+        function renderInvestigatorDashboard() {
+            return `
+                <div class="max-w-7xl mx-auto px-4 py-12">
+                    <div class="flex justify-between items-center mb-8">
+                        <div>
+                            <div class="text-xs text-emerald-400 font-bold uppercase tracking-wider">Investigator Console</div>
+                            <h1 class="font-display text-3xl font-bold text-white">Assigned Forensic Queue</h1>
+                        </div>
+                    </div>
+
+                    <div class="glass-card p-6 rounded-2xl border border-white/10">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-navy-900 text-slate-400 border-b border-white/10">
+                                <tr>
+                                    <th class="p-3">Ref</th>
+                                    <th class="p-3">Victim</th>
+                                    <th class="p-3">Scammer Entity</th>
+                                    <th class="p-3">Status</th>
+                                    <th class="p-3">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-white/5 text-slate-300">
+                                ${AppState.cases.map(c => `
+                                    <tr>
+                                        <td class="p-3 font-mono text-emerald-400">${c.ref}</td>
+                                        <td class="p-3">${c.victim}</td>
+                                        <td class="p-3">${c.scammer}</td>
+                                        <td class="p-3"><span class="bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded">${c.status}</span></td>
+                                        <td class="p-3">
+                                            <button onclick="showToast('Opened Forensic Workbench for ${c.ref}')" class="bg-emerald-500 text-white px-3 py-1 rounded text-[11px]">Inspect Docket</button>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 12. ADMIN DASHBOARD VIEW
+        function renderAdminDashboard() {
+            return `
+                <div class="max-w-7xl mx-auto px-4 py-12">
+                    <div class="flex justify-between items-center mb-8">
+                        <div>
+                            <div class="text-xs text-red-400 font-bold uppercase tracking-wider">Super Administrator Control</div>
+                            <h1 class="font-display text-3xl font-bold text-white">System Operations & Localisation Engine</h1>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <!-- Localisation Engine Configuration -->
+                        <div class="glass-card p-6 rounded-2xl border border-white/10 space-y-4">
+                            <h3 class="font-display font-bold text-lg text-white">Currency & Regional Gateways Configuration</h3>
+                            <div class="space-y-3 text-xs">
+                                ${Object.keys(AppState.countries).slice(0, 5).map(c => `
+                                    <div class="flex justify-between items-center bg-navy-900 p-3 rounded-lg border border-white/5">
+                                        <div>
+                                            <div class="text-white font-semibold">${AppState.countries[c].name} (${c})</div>
+                                            <div class="text-slate-400 text-[10px]">Gateway: ${AppState.countries[c].gateway}</div>
+                                        </div>
+                                        <div class="text-right">
+                                            <div class="font-mono text-emerald-400">1 USD = ${AppState.countries[c].rate} ${AppState.countries[c].currency}</div>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <!-- System Audit Log -->
+                        <div class="glass-card p-6 rounded-2xl border border-white/10 space-y-4">
+                            <h3 class="font-display font-bold text-lg text-white">Encrypted Audit Logs</h3>
+                            <div class="space-y-2 text-xs font-mono text-slate-300">
+                                <div class="bg-navy-900 p-2 rounded border border-white/5">[2026-03-15 12:00] SHA-256 Hash Verified for Case STG-2026-8819</div>
+                                <div class="bg-navy-900 p-2 rounded border border-white/5">[2026-03-15 11:15] Stripe Payment Webhook Confirmed ($699 USD)</div>
+                                <div class="bg-navy-900 p-2 rounded border border-white/5">[2026-03-15 09:00] Admin Assigned Agent Vance to STG-2026-8819</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 13. DYNAMIC CHECKOUT MODAL SYSTEM
+        function openCheckoutModal(packageId) {
+            const pkg = AppState.packages[packageId];
+            if (!pkg) return;
+
+            const cData = AppState.countries[AppState.selectedCountry];
+            const localPriceFormatted = formatCurrency(pkg.usdPrice);
+
+            const modal = document.getElementById('global-modal');
+            const content = document.getElementById('modal-content');
+
+            content.innerHTML = `
+                <div class="p-6 sm:p-8">
+                    <button onclick="closeModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+
+                    <div class="text-center mb-6">
+                        <span class="text-emerald-400 font-semibold text-xs uppercase tracking-wider">Dynamic Localized Checkout</span>
+                        <h3 class="font-display text-2xl font-bold text-white mt-1">${pkg.name}</h3>
+                        <div class="text-3xl font-extrabold text-emerald-400 font-mono mt-2">${localPriceFormatted}</div>
+                        <div class="text-xs text-slate-400 mt-1">Configured for ${cData.name} (${cData.currency})</div>
+                    </div>
+
+                    <!-- Payment Method Tabs -->
+                    <div class="bg-navy-900 p-4 rounded-xl border border-white/10 space-y-4 text-xs">
+                        <div class="font-semibold text-white">Select Payment Method (${cData.name}):</div>
+                        
+                        <div class="space-y-2">
+                            <!-- Option 1: Card / Direct Gateway -->
+                            <div class="p-3 bg-navy-800 border border-emerald-500/40 rounded-lg flex items-center justify-between cursor-pointer">
+                                <div class="flex items-center gap-3">
+                                    <i class="fa-solid fa-credit-card text-emerald-400 text-lg"></i>
+                                    <div>
+                                        <div class="text-white font-semibold">Online Payment (${cData.gateway})</div>
+                                        <div class="text-slate-400 text-[10px]">Instant Automated Verification</div>
+                                    </div>
+                                </div>
+                                <span class="w-4 h-4 rounded-full bg-emerald-500 flex items-center justify-center text-[8px] text-white"><i class="fa-solid fa-check"></i></span>
+                            </div>
+
+                            <!-- Option 2: Virtual Bank Account / Wire -->
+                            <div class="p-3 bg-navy-800 border border-white/10 rounded-lg flex items-center justify-between opacity-70">
+                                <div class="flex items-center gap-3">
+                                    <i class="fa-solid fa-building-columns text-slate-400 text-lg"></i>
+                                    <div>
+                                        <div class="text-white font-semibold">Local Bank Wire / Virtual Account</div>
+                                        <div class="text-slate-400 text-[10px]">Generate unique account number</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Dynamic Bank Account Virtual Info Box Simulation -->
+                        <div class="bg-navy-950 p-4 rounded-lg border border-white/10 font-mono text-[11px] space-y-2">
+                            <div class="text-emerald-400 font-bold border-b border-white/5 pb-1">VIRTUAL PAYMENT ACCOUNT (${cData.currency})</div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-400">Bank Name:</span>
+                                <span class="text-white">SCAMTRACE GLOBAL SECURE ESCROW</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-400">Account No:</span>
+                                <span class="text-emerald-400 font-bold">9928-1029-4819</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-400">Reference:</span>
+                                <span class="text-white">STG-PAY-${Math.floor(1000+Math.random()*9000)}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button onclick="processSimulatedPayment('${pkg.name}')" class="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-emerald-500/20 text-xs mt-6 transition hover:scale-105">
+                        Confirm & Verify Payment (${localPriceFormatted})
+                    </button>
+                </div>
+            `;
+
+            modal.classList.remove('hidden');
+        }
+
+        function processSimulatedPayment(pkgName) {
+            closeModal();
+            showToast(`Payment of ${pkgName} verified via local gateway webhook! Case assigned.`);
+            navigateTo('customer-dash');
+        }
+
+        // --- LEGAL VIEWS ---
+        function renderLegalPrivacyView() {
+            return `
+                <div class="max-w-4xl mx-auto px-4 py-16 text-xs text-slate-300 space-y-4">
+                    <h1 class="font-display text-3xl font-bold text-white mb-6">Privacy & Data Security Policy</h1>
+                    <p>SCAMTRACE GLOBAL adheres strictly to global data protection laws (GDPR, CCPA). All victim information, chat logs, and financial records uploaded to our platform are encrypted in transit and at rest using AES-256 and SHA-256 hashing standards.</p>
+                </div>
+            `;
+        }
+
+        function renderLegalTermsView() {
+            return `
+                <div class="max-w-4xl mx-auto px-4 py-16 text-xs text-slate-300 space-y-4">
+                    <h1 class="font-display text-3xl font-bold text-white mb-6">Terms of Service & Investigation Scope</h1>
+                    <p>SCAMTRACE GLOBAL provides independent digital forensic investigation and legal evidence packaging. We do not engage in unauthorized network access, private vigilantism, or guarantee asset recovery. All forensic dockets are prepared for submission to law enforcement bodies.</p>
+                </div>
+            `;
+        }
+
+        // --- INITIALIZATION ON WINDOW LOAD ---
+        window.onload = function() {
+            initCountrySelector();
+            updateAuthUI();
+            
+            // Hide Preloader smooth transition
+            setTimeout(() => {
+                const preloader = document.getElementById('preloader');
+                preloader.classList.add('opacity-0');
+                setTimeout(() => preloader.style.display = 'none', 500);
+            }, 600);
+
+            // Initial view load
+            renderView('home');
+        };
+    </script>
+</body>
+</html>
